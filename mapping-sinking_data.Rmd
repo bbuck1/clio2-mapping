@@ -1,0 +1,65 @@
+---
+title: "Mapping Assignment"
+author: "Brandan P. Buck"
+date: "8 Apr 2019"
+output: html_document
+---
+
+# Loading and preparing the data
+
+```{r setup}
+
+library(dplyr)
+library(tidyverse)
+library(leaflet)
+library(sf)
+
+sinking_data<- read_csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_fleet_sinkings_simplified_v4.csv")
+sinking_agents_complete<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_agent_v1.csv", header = TRUE, sep = ",")
+sinking_countries_all_types<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_country_v1.csv", header = TRUE, sep = ".")
+
+dms2dd <- function(x) {
+  deg <- str_extract(x, "\\d+") %>% as.numeric()
+  min <- str_extract(x, "-\\d+") %>% str_remove("-") %>% as.numeric()
+  deg <- deg + min / 60
+  dir <- str_extract(x, "\\w$")
+  ifelse(dir %in% c("N", "E"),
+         deg,
+         -deg)}
+
+sinking_data_dd<- sinking_data %>%
+  mutate(lat = dms2dd(loc_1),
+         lon= dms2dd(loc_2))
+
+sinking_data$date<-as.Date(sinking_data$date, '%Y-%m-%d')
+```
+
+Some helper functions.
+
+```{r}
+
+pal <- colorFactor(c("red", "blue"), domain = c("submarine", "aircraft"))
+
+sinking_data_dd %>%
+  drop_na(cas_est) %>%
+  filter(sinking_agent == "submarine"|
+         sinking_agent == "aircraft") %>%
+  filter(cas_est > 200) %>%
+  leaflet() %>%
+  addCircleMarkers(lng = ~lon, lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   popup = ~paste(name, cas_est, type, sinking_agent, date, sep = " "))%>%
+  addProviderTiles("Stamen.Watercolor")
+
+#This is an interactive map showing all vessels with known casualty estimates over 200. The circles have been colored to indicate sinking agent, blue for submarines and red for aircraft. A cursory look at the data shows that sinkings via submarines constituted an overwhelming number of mass causality sinkings, 84 for subs, 19 for aircraft.These events clustered between the island of Luzon and Taiwan. Examining each event also shows at the number of mass causality events occurred during 1944. 
+
+```
+
+```{r}
+
+
+```
+
+
+
+
