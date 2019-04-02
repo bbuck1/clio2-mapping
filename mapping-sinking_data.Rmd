@@ -1,22 +1,37 @@
 ---
 title: "Mapping Assignment"
 author: "Brandan P. Buck"
+<<<<<<< HEAD
 date: "2 Apr 2019"
 output: html_document
 ---
 
 ```{r, include=FALSE}
+=======
+date: "8 Apr 2019"
+output: html_document
+---
+
+# Loading and preparing the data
+
+```{r setup}
+
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
 library(dplyr)
 library(tidyverse)
 library(leaflet)
 library(sf)
+<<<<<<< HEAD
 library(maps)
 library(mapdata)
+=======
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
 
 sinking_data<- read_csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_fleet_sinkings_simplified_v4.csv")
 sinking_agents_complete<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_agent_v1.csv", header = TRUE, sep = ",")
 sinking_countries_all_types<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_country_v1.csv", header = TRUE, sep = ".")
 
+<<<<<<< HEAD
 ```
 
 For this assignment I revisited the sinking data that I intend to use for the final project. I could not figure out how to use ggplot to build static maps since the data I am using already has geocoords. Also, since these events occur on the ocean, I don’t have a polygon shapefile to use as a baselayer in a choropleth map. Therefore, I made two leaf maps, one depicting mass causality events and the other the U.S. mining campaign known as Operation Starvation.
@@ -24,6 +39,8 @@ For this assignment I revisited the sinking data that I intend to use for the fi
 
 ```{r setup}
 
+=======
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
 dms2dd <- function(x) {
   deg <- str_extract(x, "\\d+") %>% as.numeric()
   min <- str_extract(x, "-\\d+") %>% str_remove("-") %>% as.numeric()
@@ -37,6 +54,7 @@ sinking_data_dd<- sinking_data %>%
   mutate(lat = dms2dd(loc_1),
          lon= dms2dd(loc_2))
 
+<<<<<<< HEAD
 sinking_agents_complete_dd<- sinking_data %>%
   left_join(sinking_agents_complete, by = "id_no") %>% 
   mutate(lat = dms2dd(loc_1),
@@ -51,6 +69,12 @@ The largest number of these events clustered between the island of Luzon and Tai
 U.S. submarines sunk cluster of vessels which resulted in mass causality events south of the Japanese island of Kyushu and in the China Sea. These events occurred when only Allied submarines (almost exclusively U.S. boats) were capable of sinking Japanese merchant vessels in vicinity of the Japanese home islands. 
 
 This amended dataset displays the same spatial pattern as the larger one, submarine sinkings constituted a war of attrition clustered in, but not limited to the South China Sea. Aircraft however mass their assaults on major ports and shipping nodes. Port facilities on the coral atoll of Truk and southern Taiwan depict this pattern prominently. Similarly, Allied submarines, as one may expect had the longest reach throughout war. Conversely, Allied aircraft played a larger role, later in the war as larger carrier groups won decisive battles with the Imperial Japanese Navy.
+=======
+sinking_data$date<-as.Date(sinking_data$date, '%Y-%m-%d')
+```
+
+Some helper functions.
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
 
 ```{r}
 
@@ -60,13 +84,18 @@ sinking_data_dd %>%
   drop_na(cas_est) %>%
   filter(sinking_agent == "submarine"|
          sinking_agent == "aircraft") %>%
+<<<<<<< HEAD
   filter(cas_est > 150) %>%
+=======
+  filter(cas_est > 200) %>%
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
   leaflet() %>%
   addCircleMarkers(lng = ~lon, lat = ~lat,
                    color = ~pal(sinking_agent),
                    popup = ~paste(name, cas_est, type, sinking_agent, date, sep = " "))%>%
   addProviderTiles("Stamen.Watercolor")
 
+<<<<<<< HEAD
 ```
 
 This is a map of all ships sunk by U.S. Army Airforce air dropped mines from May 1945 until the end of the war. Exploring the map shows the various clusters of mining activity and the overwhelming density sinkings within the Kanmon straits. As one reduces the viewing scale, the extend of the mining campaign becomes apparent as seemingly every inlet saw a merchant ship sink. Smaller clusters of mining activity occurred on outside of the Port of Niigata, other port facilities on the western coast of the island of Honshu, and off the Korean coast.  
@@ -79,6 +108,14 @@ sinking_agents_complete_dd%>%
   leaflet() %>%
   addProviderTiles("Stamen.Watercolor") %>%
   addMarkers(clusterOptions = markerClusterOptions(), lng = ~lon, lat = ~lat, popup = ~name)
+=======
+#This is an interactive map showing all vessels with known casualty estimates over 200. The circles have been colored to indicate sinking agent, blue for submarines and red for aircraft. A cursory look at the data shows that sinkings via submarines constituted an overwhelming number of mass causality sinkings, 84 for subs, 19 for aircraft.These events clustered between the island of Luzon and Taiwan. Examining each event also shows at the number of mass causality events occurred during 1944. 
+
+```
+
+```{r}
+
+>>>>>>> 90146bb59eb5012c331931623fd19c5d250cbc52
 
 ```
 
