@@ -1,7 +1,7 @@
 ---
 title: "Mapping Assignment"
 author: "Brandan P. Buck"
-date: "5 Apr 2019"
+date: "6 Apr 2019"
 output: html_document
 ---
 
@@ -175,111 +175,128 @@ Below is an interactive map of the entire campaign. A larger view is available a
 http://brandanpbuck.com/unrestricted/unrestricted.html
 
 ```{r}
-sinking_data_dd_41 <-sinking_data_dd %>%
-  filter(year == 1941,
-         sinking_agent != "sabotage" |
+sinking_data_dd_41_42 <-sinking_data_dd %>%
+  filter(year == 1941 |
+         year == 1942) %>%
+  filter(sinking_agent != "sabotage" |
          sinking_agent != "unknown")
 
-sinking_data_dd_42 <-sinking_data_dd %>%
-  filter(year == 1942,
-         sinking_agent != "sabotage" |
+sinking_data_dd_jan_jun_43 <-sinking_data_dd %>%
+  filter(year == 1943) %>%
+  filter(date < "1943-07-01") %>%
+  filter(sinking_agent != "sabotage" |
            sinking_agent != "unknown")
 
-sinking_data_dd_43 <-sinking_data_dd %>%
-  filter(year == 1943,
-         sinking_agent != "sabotage" |
-         sinking_agent != "unknown")
-
-sinking_data_dd_jan_sep_44 <-sinking_data_dd %>%
-  filter(year == 1944) %>% 
-  filter(date < "1944-09-29",
-         sinking_agent != "sabotage" |
+sinking_data_dd_jul_dec_43 <-sinking_data_dd %>%
+  filter(year == 1943) %>%
+  filter(date > "1943-06-28") %>%
+  filter(sinking_agent != "sabotage" |
            sinking_agent != "unknown")
+
+sinking_data_dd_jan_mar_44 <-sinking_data_dd %>%
+  filter(year == 1944) %>%
+  filter(date < "1944-04-01") %>%
+  filter (sinking_agent != "sabotage" |
+            sinking_agent != "unknown")
+
+sinking_data_dd_apr_sep_44 <-sinking_data_dd %>%
+  filter(year == 1944) %>%
+  filter(date < "1944-10-01") %>%
+  filter(date > "1944-03-30") %>%
+  filter (sinking_agent != "sabotage" |
+            sinking_agent != "unknown")
 
 sinking_data_dd_oct_dec_44 <-sinking_data_dd %>%
-  filter(year == 1944) %>% 
+  filter(year == 1944) %>%
   filter(date > "1944-09-29",
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
 
 sinking_data_dd_jan_apr_45 <-sinking_data_dd %>%
-  filter(year == 1945) %>% 
+  filter(year == 1945) %>%
   filter(date < "1945-04-30",
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
 
 sinking_data_dd_may_aug_45 <-sinking_data_dd %>%
-  filter(year == 1945) %>% 
+  filter(year == 1945) %>%
   filter(date > "1945-04-30",
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
 
-
-
-
 leaflet() %>%
   addProviderTiles("Stamen.Watercolor", group = "Map") %>%
   addProviderTiles("Esri.WorldImagery", group = "Imagery") %>%
-  addCircleMarkers(data = sinking_data_dd_41,
+  addCircleMarkers(data = sinking_data_dd_41_42,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "1. 1941") %>%
-  addCircleMarkers(data = sinking_data_dd_42,
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "1. Dec, 1941- Dec, 1942") %>%
+  addCircleMarkers(data = sinking_data_dd_jan_jun_43,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "),
-                   group = "2. 1942") %>%
-  addCircleMarkers(data = sinking_data_dd_43,
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "2. Jan-Jun 1943") %>%
+  addCircleMarkers(data = sinking_data_dd_jul_dec_43,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "3. 1943") %>%
-  addCircleMarkers(data = sinking_data_dd_jan_sep_44,
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "3. Jul - Dec, 1943") %>%
+  addCircleMarkers(data = sinking_data_dd_jan_mar_44,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "4. Jan-Sep, 1944") %>%
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "4. Jan-Mar, 1944") %>%
+  addCircleMarkers(data = sinking_data_dd_apr_sep_44,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "5. Apr-Sep, 1944") %>%
   addCircleMarkers(data = sinking_data_dd_oct_dec_44,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "5. Oct-Dec, 1944") %>%
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "6. Oct-Dec, 1944") %>%
   addCircleMarkers(data = sinking_data_dd_jan_apr_45,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "6. Jan-Apr, 1945") %>%
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "),
+                   group = "7. Jan-Apr, 1945") %>%
   addCircleMarkers(data = sinking_data_dd_may_aug_45,
                    lng = ~lon,
                    lat = ~lat,
                    color = ~pal(sinking_agent),
                    radius = 3,
-                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
-                   group = "7. May-Aug, 1945") %>% 
+                   popup = ~paste(name, type, sinking_agent, date, sep = ","),
+                   group = "8. May-Aug, 1945") %>%
   addLegend(position = "bottomright",
             pal= pal,
             values = c("aircraft", "mine", "submarine", "surface_craft"),
             title = "Sinking Agent") %>%
   addLayersControl(
     baseGroups = c("Map", "Imagery"),
-    overlayGroups = c("1. 1941","2. 1942","3. 1943","4. Jan-Sep, 1944","5. Oct-Dec, 1944", 
-                      "6. Jan-Apr, 1945", "7. May-Aug, 1945"))%>% 
-  addScaleBar(position = "bottomleft", 
-              options = scaleBarOptions(maxWidth = 250, imperial = TRUE, 
+    overlayGroups = c("1. Dec, 1941- Dec, 1942","2. Jan-Jun 1943","3. Jul - Dec, 1943",
+                      "4. Jan-Mar, 1944","5. Apr-Sep, 1944",
+                      "6. Oct-Dec, 1944", "7. Jan-Apr, 1945", "8. May-Aug, 1945"))%>%
+  addScaleBar(position = "bottomleft",
+              options = scaleBarOptions(maxWidth = 250, imperial = TRUE,
                         metric = FALSE, updateWhenIdle = TRUE))
+
+
 
 
 ```
