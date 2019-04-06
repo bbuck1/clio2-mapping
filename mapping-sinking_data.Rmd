@@ -171,7 +171,118 @@ leaflet() %>%
 
 ```
 
+Below is an interactive map of the entire campaign. A larger view is available at:
+http://brandanpbuck.com/unrestricted/unrestricted.html
 
+```{r}
+sinking_data_dd_41 <-sinking_data_dd %>%
+  filter(year == 1941,
+         sinking_agent != "sabotage" |
+         sinking_agent != "unknown")
+
+sinking_data_dd_42 <-sinking_data_dd %>%
+  filter(year == 1942,
+         sinking_agent != "sabotage" |
+           sinking_agent != "unknown")
+
+sinking_data_dd_43 <-sinking_data_dd %>%
+  filter(year == 1943,
+         sinking_agent != "sabotage" |
+         sinking_agent != "unknown")
+
+sinking_data_dd_jan_sep_44 <-sinking_data_dd %>%
+  filter(year == 1944) %>% 
+  filter(date < "1944-09-29",
+         sinking_agent != "sabotage" |
+           sinking_agent != "unknown")
+
+sinking_data_dd_oct_dec_44 <-sinking_data_dd %>%
+  filter(year == 1944) %>% 
+  filter(date > "1944-09-29",
+         sinking_agent != "sabotage" |
+           sinking_agent != "unknown")
+
+sinking_data_dd_jan_apr_45 <-sinking_data_dd %>%
+  filter(year == 1945) %>% 
+  filter(date < "1945-04-30",
+         sinking_agent != "sabotage" |
+           sinking_agent != "unknown")
+
+sinking_data_dd_may_aug_45 <-sinking_data_dd %>%
+  filter(year == 1945) %>% 
+  filter(date > "1945-04-30",
+         sinking_agent != "sabotage" |
+           sinking_agent != "unknown")
+
+
+
+
+leaflet() %>%
+  addProviderTiles("Stamen.Watercolor", group = "Map") %>%
+  addProviderTiles("Esri.WorldImagery", group = "Imagery") %>%
+  addCircleMarkers(data = sinking_data_dd_41,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "1. 1941") %>%
+  addCircleMarkers(data = sinking_data_dd_42,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "),
+                   group = "2. 1942") %>%
+  addCircleMarkers(data = sinking_data_dd_43,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "3. 1943") %>%
+  addCircleMarkers(data = sinking_data_dd_jan_sep_44,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "4. Jan-Sep, 1944") %>%
+  addCircleMarkers(data = sinking_data_dd_oct_dec_44,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "5. Oct-Dec, 1944") %>%
+  addCircleMarkers(data = sinking_data_dd_jan_apr_45,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "6. Jan-Apr, 1945") %>%
+  addCircleMarkers(data = sinking_data_dd_may_aug_45,
+                   lng = ~lon,
+                   lat = ~lat,
+                   color = ~pal(sinking_agent),
+                   radius = 3,
+                   popup = ~paste(name, type, sinking_agent, date, sep = " "), 
+                   group = "7. May-Aug, 1945") %>% 
+  addLegend(position = "bottomright",
+            pal= pal,
+            values = c("aircraft", "mine", "submarine", "surface_craft"),
+            title = "Sinking Agent") %>%
+  addLayersControl(
+    baseGroups = c("Map", "Imagery"),
+    overlayGroups = c("1. 1941","2. 1942","3. 1943","4. Jan-Sep, 1944","5. Oct-Dec, 1944", 
+                      "6. Jan-Apr, 1945", "7. May-Aug, 1945"))%>% 
+  addScaleBar(position = "bottomleft", 
+              options = scaleBarOptions(maxWidth = 250, imperial = TRUE, 
+                        metric = FALSE, updateWhenIdle = TRUE))
+
+
+```
 
 
 
