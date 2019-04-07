@@ -15,10 +15,7 @@ library(maps)
 library(mapdata)
 
 sinking_data<- read_csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_fleet_sinkings_simplified_v4.csv")
-sinking_agents_complete<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_agent_v1.csv", header = TRUE, sep = ",")
-sinking_countries_all_types<- read.csv("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/CILO II/project_data/sinking_data/japanese_merchant_vessel_sinking_country_v1.csv", header = TRUE, sep = ".")
-
-
+sloc<- read_sf("C:/Users/bpbuc/Documents/Brandan's Stuff/_PhD Stuff/Cilo Wired-Hist 696/Project/Data/SLOC/Japanese SLOC WWII Complete.shp")
 
 ```
 
@@ -206,11 +203,18 @@ sinking_data_dd_apr_sep_44 <-sinking_data_dd %>%
   filter (sinking_agent != "sabotage" |
             sinking_agent != "unknown")
 
+sloc_closed_mar_44<- sloc %>%
+  filter(Closed != "March 44")
+
 sinking_data_dd_oct_dec_44 <-sinking_data_dd %>%
   filter(year == 1944) %>%
   filter(date > "1944-09-29",
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
+
+sloc_closed_may_44<- sloc %>%
+  filter(Closed != "March 44") %>%
+  filter(Closed != "May 44")
 
 sinking_data_dd_jan_apr_45 <-sinking_data_dd %>%
   filter(year == 1945) %>%
@@ -218,11 +222,23 @@ sinking_data_dd_jan_apr_45 <-sinking_data_dd %>%
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
 
+sloc_closed_dec_44<- sloc %>%
+  filter(Closed != "March 44") %>%
+  filter(Closed != "May 44") %>%
+  filter(Closed != "Dec 44")
+
 sinking_data_dd_may_aug_45 <-sinking_data_dd %>%
   filter(year == 1945) %>%
   filter(date > "1945-04-30",
          sinking_agent != "sabotage" |
            sinking_agent != "unknown")
+
+sloc_closed_may_45<- sloc %>%
+  filter(Closed != "March 44") %>%
+  filter(Closed != "May 44") %>%
+  filter(Closed != "Dec 44") %>%
+  filter(Closed != "May 45")
+
 
 leaflet() %>%
   addProviderTiles("Stamen.Watercolor", group = "Map") %>%
@@ -234,6 +250,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "1. Dec, 1941- Dec, 1942") %>%
+  addPolylines(data = sloc,
+               color = "grey",
+               group = "1. Dec, 1941- Dec, 1942") %>%
   addCircleMarkers(data = sinking_data_dd_jan_jun_43,
                    lng = ~lon,
                    lat = ~lat,
@@ -241,6 +260,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "2. Jan-Jun 1943") %>%
+  addPolylines(data = sloc,
+               color = "grey",
+               group = "2. Jan-Jun 1943") %>%
   addCircleMarkers(data = sinking_data_dd_jul_dec_43,
                    lng = ~lon,
                    lat = ~lat,
@@ -248,6 +270,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "3. Jul - Dec, 1943") %>%
+  addPolylines(data = sloc,
+               color = "grey",
+               group = "3. Jul - Dec, 1943") %>%
   addCircleMarkers(data = sinking_data_dd_jan_mar_44,
                    lng = ~lon,
                    lat = ~lat,
@@ -255,6 +280,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "4. Jan-Mar, 1944") %>%
+  addPolylines(data = sloc,
+               color = "grey",
+               group = "4. Jan-Mar, 1944") %>%
   addCircleMarkers(data = sinking_data_dd_apr_sep_44,
                    lng = ~lon,
                    lat = ~lat,
@@ -262,6 +290,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "5. Apr-Sep, 1944") %>%
+  addPolylines(data = sloc_closed_mar_44,
+               color = "grey",
+               group = "5. Apr-Sep, 1944") %>%
   addCircleMarkers(data = sinking_data_dd_oct_dec_44,
                    lng = ~lon,
                    lat = ~lat,
@@ -269,6 +300,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "6. Oct-Dec, 1944") %>%
+  addPolylines(data = sloc_closed_may_44,
+               color = "grey",
+               group = "6. Oct-Dec, 1944") %>%
   addCircleMarkers(data = sinking_data_dd_jan_apr_45,
                    lng = ~lon,
                    lat = ~lat,
@@ -276,6 +310,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = " "),
                    group = "7. Jan-Apr, 1945") %>%
+  addPolylines(data = sloc_closed_dec_44,
+               color = "grey",
+               group = "7. Jan-Apr, 1945") %>%
   addCircleMarkers(data = sinking_data_dd_may_aug_45,
                    lng = ~lon,
                    lat = ~lat,
@@ -283,6 +320,9 @@ leaflet() %>%
                    radius = 3,
                    popup = ~paste(name, type, sinking_agent, date, sep = ","),
                    group = "8. May-Aug, 1945") %>%
+  addPolylines(data = sloc_closed_may_45,
+               color = "grey",
+               group = "8. May-Aug, 1945") %>%
   addLegend(position = "bottomright",
             pal= pal,
             values = c("aircraft", "mine", "submarine", "surface_craft"),
@@ -291,13 +331,10 @@ leaflet() %>%
     baseGroups = c("Map", "Imagery"),
     overlayGroups = c("1. Dec, 1941- Dec, 1942","2. Jan-Jun 1943","3. Jul - Dec, 1943",
                       "4. Jan-Mar, 1944","5. Apr-Sep, 1944",
-                      "6. Oct-Dec, 1944", "7. Jan-Apr, 1945", "8. May-Aug, 1945"))%>%
+                      "6. Oct-Dec, 1944", "7. Jan-Apr, 1945", "8. May-Aug, 1945")) %>%
   addScaleBar(position = "bottomleft",
               options = scaleBarOptions(maxWidth = 250, imperial = TRUE,
                         metric = FALSE, updateWhenIdle = TRUE))
-
-
-
 
 ```
 
